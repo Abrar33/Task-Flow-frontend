@@ -35,7 +35,7 @@ This is the client-side application for the Team Board collaborative task manage
 1.  **Clone the repository (if not already done):**
     ```bash
     git clone <your-repo-url>
-    cd team-board-frontend
+    cd frontend
     ```
 
 2.  **Install dependencies:**
