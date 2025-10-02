@@ -38,7 +38,7 @@ export const NotificationProvider = ({ children }) => {
 
     isFetchingRef.current = true;
     try {
-      const res = await fetch(`http://localhost:3000/api/notifications?page=${pageToFetch}&limit=20`, {
+      const res = await fetch(`https://task-flow-backend-umber.vercel.app/api/notifications?page=${pageToFetch}&limit=20`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
@@ -75,7 +75,7 @@ export const NotificationProvider = ({ children }) => {
   const markNotificationAsRead = useCallback(async (id) => {
     // ... (rest of the code is the same)
     try {
-      const res = await fetch(`http://localhost:3000/api/notifications/${id}/read`, {
+      const res = await fetch(`https://task-flow-backend-umber.vercel.app/api/notifications/${id}/read`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`,
@@ -95,7 +95,7 @@ export const NotificationProvider = ({ children }) => {
   const markAllAsRead = useCallback(async () => {
     // ... (rest of the code is the same)
     try {
-      const res = await fetch("http://localhost:3000/api/notifications/readAll", {
+      const res = await fetch("https://task-flow-backend-umber.vercel.app/api/notifications/readAll", {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`,
@@ -113,7 +113,7 @@ export const NotificationProvider = ({ children }) => {
   const deleteNotification = useCallback(async (id) => {
     // ... (rest of the code is the same)
     try {
-      const res = await fetch(`http://localhost:3000/api/notifications/${id}`, {
+      const res = await fetch(`https://task-flow-backend-umber.vercel.app/api/notifications/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`,
