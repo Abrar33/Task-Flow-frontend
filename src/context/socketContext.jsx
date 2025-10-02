@@ -11,7 +11,7 @@ export const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     if (user && user._id) {
-      const s = io("http://localhost:3000", { query: { userId: user._id } });
+      const s = io("https://task-flow-backend-umber.vercel.app", { query: { userId: user._id } });
       window.socket = s; // ✅ For debugging
       setSocket(s);
 
