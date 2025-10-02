@@ -6,9 +6,9 @@ export const useSocket = () => useContext(SocketContext);
 
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
-
+const baseUrl = process.env.API_BASE_URL || "http://localhost:3000";
   useEffect(() => {
-    const s = io("http://localhost:3000", {
+    const s = io(baseUrl, {
       transports: ["websocket"],
       autoConnect: true,
     });

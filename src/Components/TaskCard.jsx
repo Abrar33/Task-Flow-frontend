@@ -4,7 +4,7 @@ import { FaCheckCircle, FaRegCircle, FaTrashAlt } from "react-icons/fa";
 
 const ItemTypes = { TASK: "task" };
 
-const TaskCard = ({ task, listId, onTaskComplete, onTaskDelete, onDropTask }) => {
+const TaskCard = ({darkMode, task, listId, onTaskComplete, onTaskDelete, onDropTask }) => {
   const ref = useRef(null);
 
   // Enable dragging
@@ -47,52 +47,61 @@ const TaskCard = ({ task, listId, onTaskComplete, onTaskDelete, onDropTask }) =>
   drag(drop(ref));
 
   const isCompleted = task.completed;
+ const cardBg = darkMode ? "bg-gray-800" : "bg-white";
+  const hoverBg = darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100";
+  const borderColor = darkMode ? "border-gray-700" : "border-gray-200";
+  const titleColor = darkMode ? "text-gray-100" : "text-gray-900";
+  const descColor = darkMode ? "text-gray-300" : "text-gray-600";
+  const deadlineColor = darkMode ? "text-gray-500" : "text-gray-400";
+  const completeColor = isCompleted
+    ? "text-green-500 hover:text-green-600"
+    : "text-gray-400 hover:text-gray-500";
 
   return (
-    <div
+   <div
       ref={ref}
       style={{ opacity: isDragging ? 0.4 : 1 }}
-      className="relative bg-white dark:bg-gray-700 rounded-lg shadow-md p-5 mb-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+      className={`relative ${cardBg} ${hoverBg} rounded-xl shadow-md border ${borderColor} p-5 mb-4 cursor-pointer transition-all duration-200`}
     >
       <div className="flex justify-between items-start gap-4">
         {/* Completion Icon */}
         <button
           onClick={() => onTaskComplete(task._id, !isCompleted)}
-          className={`p-1 rounded-full focus:outline-none transition-colors ${
-            isCompleted
-              ? "text-green-500 hover:text-green-600"
-              : "text-gray-400 hover:text-gray-500"
-          }`}
+          className={`p-1 rounded-full focus:outline-none transition-colors ${completeColor}`}
         >
           {isCompleted ? <FaCheckCircle size={20} /> : <FaRegCircle size={20} />}
         </button>
 
         {/* Task Content */}
         <div className="flex-grow overflow-hidden">
-          <h4 className="font-semibold text-gray-900 dark:text-gray-100 break-words">
+          <h4 className={`font-semibold ${titleColor} break-words`}>
             {task.title}
           </h4>
           {task.description && (
-            <p className="text-sm text-gray-600 dark:text-gray-300 mt-1 whitespace-pre-wrap break-words">
+            <p
+              className={`text-sm mt-1 whitespace-pre-wrap break-words ${descColor}`}
+            >
               {task.description}
             </p>
           )}
           {task.deadline && (
-            <span className="text-xs text-gray-400 dark:text-gray-500 mt-2 block">
+            <span className={`text-xs mt-2 block ${deadlineColor}`}>
               Deadline: {new Date(task.deadline).toLocaleDateString()}
             </span>
           )}
-        </div>
+  </div>
 
         {/* Delete Icon */}
         <button
           onClick={() => onTaskDelete(task._id)}
           className="p-1 text-gray-400 hover:text-red-500 transition-colors focus:outline-none"
+          title="Delete task"
         >
           <FaTrashAlt size={16} />
         </button>
       </div>
     </div>
+
   );
 };
 

@@ -23,8 +23,11 @@ import NotificationCenter from "./pages/notificationCenter";
 import AllBoards from "./Components/Board";
 import { SocketProvider } from "./context/socketContext";
 import { Toaster } from "react-hot-toast";
+import { useState } from "react";
 
 const App = () => {
+  const [darkMode, setDarkMode] = useState(false);
+
   return (
     <>
               <Toaster position="top-right" reverseOrder={false} />
@@ -45,9 +48,9 @@ const App = () => {
                   path="/notifications"
                   element={
                     <PrivateRoute>
-                      <MainLayout>
+                      <MainLayout darkMode={darkMode} setDarkMode={setDarkMode}>
                         {/* Redirect to the boards page */}
-                        <NotificationCenter/>
+                        <NotificationCenter darkMode={darkMode}/>
                       </MainLayout>
                     </PrivateRoute>
                   }
@@ -56,9 +59,9 @@ const App = () => {
                   path="/"
                   element={
                     <PrivateRoute>
-                      <MainLayout>
+                      <MainLayout darkMode={darkMode} setDarkMode={setDarkMode}>
                         {/* Redirect to the boards page */}
-                      <AllBoards/>
+                      <AllBoards darkMode={darkMode}/>
                       </MainLayout>
                     </PrivateRoute>
                   }
@@ -68,9 +71,9 @@ const App = () => {
                   path="/boards/:boardId"
                   element={
                     <PrivateRoute>
-                      <MainLayout>
-                        <BoardPage />
-                      </MainLayout>
+                      <MainLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                        <BoardPage  darkMode={darkMode}/>
+                      </MainLayout >
                     </PrivateRoute>
                   }
                 />
@@ -79,7 +82,7 @@ const App = () => {
                   path="/boards"
                   element={
                     <PrivateRoute>
-                      <MainLayout>
+                      <MainLayout darkMode={darkMode} setDarkMode={setDarkMode}>
                         <BoardPage />
                       </MainLayout>
                     </PrivateRoute>

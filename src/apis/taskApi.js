@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:3000/api/tasks";
+const API_BASE_URL = import.meta.env.API_BASE_URL || "https://task-flow-backend-umber.vercel.app";
 
 const callApi = async (url, method, data = null) => {
   try {
@@ -27,16 +27,16 @@ const callApi = async (url, method, data = null) => {
 
 // Get all tasks for a board
 export const getTasksByBoard = (boardId) =>
-  callApi(`${API_BASE_URL}/${boardId}/tasks`, "GET");
+  callApi(`${API_BASE_URL}/api/tasks/${boardId}/tasks`, "GET");
 
 // Create a new task for a board
 export const createTask = (boardId, taskData) =>
-  callApi(`${API_BASE_URL}/${boardId}/tasks`, "POST", taskData);
+  callApi(`${API_BASE_URL}/api/tasks/${boardId}/tasks`, "POST", taskData);
 
 // Update a task
 export const updateTask = (id, taskId, taskData) =>
-  callApi(`${API_BASE_URL}/${id}/tasks/${taskId}`, "PATCH", taskData);
+  callApi(`${API_BASE_URL}/api/tasks/${id}/tasks/${taskId}`, "PATCH", taskData);
 
 // Delete a task
 export const deleteTask = (boardId, taskId) =>
-  callApi(`${API_BASE_URL}/${boardId}/tasks/${taskId}`, "DELETE");
+  callApi(`${API_BASE_URL}/api/tasks/${boardId}/tasks/${taskId}`, "DELETE");

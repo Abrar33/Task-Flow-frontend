@@ -99,7 +99,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("loginTime");
     localStorage.removeItem("lastActivity");
     setUser(null);
-    toast.info("Logged out");
+    toast("Logged out");
     navigate("/login");
   };
 

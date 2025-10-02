@@ -15,13 +15,30 @@ import { useSocket } from "../context/socketContext";
 import { useNotifications } from "../context/notificationsContext";
 import toast from "react-hot-toast";
 
-const BoardPage = () => {
+const BoardPage = ({darkMode}) => {
   const { boardId } = useParams();
   const { user } = useAuth();
   const socket = useSocket();
   const { addNotification } = useNotifications();
   const currentUserId = user.id;
+ // --- STYLE UTILITIES based on darkMode prop ---
+  const boardBg = darkMode ? "bg-gray-950" : "bg-gray-100";
+  const headerText = darkMode ? "text-gray-100" : "text-gray-900";
+  const listAdderBg = darkMode ? "bg-gray-800" : "bg-gray-50";
+  const listAdderText = darkMode ? "text-gray-300" : "text-gray-600";
+  const inputBg = darkMode ? "bg-gray-900 border-gray-700 text-gray-100" : "bg-white border-gray-300 text-gray-900";
+  const buttonMembers = "bg-gray-500 text-white hover:bg-gray-600";
+  const buttonInvite = "bg-blue-600 text-white hover:bg-blue-700";
+  const buttonGreen = "bg-green-600 text-white hover:bg-green-700";
+  const buttonCancel = "text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700";
+  // --- NEW STYLE UTILITIES added to your existing list ---
+const buttonAddListDefault = darkMode
+  ? "dark:border-gray-600 hover:bg-gray-700 dark:hover:text-gray-50" // Dark mode base & hover
+  : "border-gray-400 hover:bg-gray-300/50 hover:text-gray-900";     // Light mode base & hover
 
+const buttonAddListHoverOpacity = darkMode ? "dark:hover:bg-opacity-70" : "hover:bg-opacity-70";
+// --------------------------------------------------------
+  // ---------------------------------------------
   const {
     selectedBoard,
     loading,
@@ -400,121 +417,155 @@ console.log(a,b,'chek')
   // --- Render ---
   //
   return (
-    <DndProvider backend={HTML5Backend}>
-      <div className="p-4 bg-gray-100 dark:bg-gray-900 min-h-screen">
-        {/* Board header with invite */}
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center space-x-2">
-            <span>{selectedBoard.name}</span>
-          </h1>
-          <div className="flex space-x-2">
-            {/* Members Button (NEW) */}
-            <button
-              onClick={() => setIsMembersModalOpen(true)}
-              className="flex items-center space-x-1 text-sm bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600 transition"
-            >
-              <FaUsers /> <span>Members ({selectedBoard.members?.length || 0})</span>
-            </button>
-          {currentUserRole === "admin" && (
-            <button
-              onClick={() => setIsInviteModalOpen(true)}
-              className="flex items-center space-x-1 text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
-            >
-              <FaPlus /> <span>Invite</span>
-            </button>
-          )}
-        </div>
-</div>
-        {/* Lists */}
-        <div className="flex flex-row space-x-4 min-h-full ">
-          {selectedBoard.lists.map((list) => {
-            const listTasks = selectedBoard.tasks.filter(
-              (t) => t.listId === list._id
-            );
-            return (
-              <List
-              
-                key={list._id}
-                list={list}
-                tasks={listTasks}
-                onTaskDrop={handleTaskDrop}
-                onAddTask={
-                  currentUserRole === "admin"
-                    ? () => handleAddTask(list._id)
-                    : undefined
-                }
-                onEditTask={handleEditTask}
-                boardMembers={selectedBoard.members}
-                onTaskComplete={handleTaskComplete}
-                onTaskDelete={handleTaskDelete}
-              />
-            );
-          })}
-
-          {/* Add List Card - Only visible to admins */}
-          {currentUserRole === "admin" && (
-            <div className="w-80 flex-shrink-0 bg-gray-200 dark:bg-gray-700 rounded-lg p-4 shadow-inner">
-              {!addingList ? (
+   <DndProvider backend={HTML5Backend}>
+    {/* Main Board Container */}
+    <div className={`p-6 ${boardBg} min-h-screen transition-colors duration-300`}>
+        
+        {/* Board Header: Sticky and Refined */}
+        <div className={`flex justify-between items-center mb-6 sticky top-0 z-10 p-4 -mx-6 -mt-6 rounded-b-lg backdrop-blur-sm shadow-xl ${darkMode ? 'bg-gray-950/90 border-b border-gray-800' : 'bg-gray-100/90 border-b border-gray-200'}`}>
+            <h1 className={`text-4xl font-extrabold ${headerText} flex items-center space-x-2`}>
+                <span className="tracking-tight">{selectedBoard.name}</span>
+            </h1>
+            <div className="flex space-x-3">
+                {/* Members Button (Bold hover effects) */}
                 <button
-                  onClick={() => setAddingList(true)}
-                  className="w-full flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+                    onClick={() => setIsMembersModalOpen(true)}
+                    className={`flex items-center space-x-2 text-sm font-medium ${buttonMembers} px-4 py-2 rounded-xl transition transform hover:scale-[1.02]`}
                 >
-                  <FaPlus className="mr-2" /> Add another list
+                    <FaUsers /> <span>Members ({selectedBoard.members?.length || 0})</span>
                 </button>
-              ) : (
-                <div className="flex flex-col space-y-2">
-                  <input
-                    type="text"
-                    value={newListName}
-                    onChange={(e) => setNewListName(e.target.value)}
-                    placeholder="Enter list name..."
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-                    autoFocus
-                  />
-                  <div className="flex space-x-2">
+                
+                {currentUserRole === "admin" && (
                     <button
-                      onClick={handleAddList}
-                      className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+                        onClick={() => setIsInviteModalOpen(true)}
+                        className={`flex items-center space-x-2 text-sm font-medium ${buttonInvite} px-4 py-2 rounded-xl transition transform hover:scale-[1.02]`}
                     >
-                      Add List
+                        <FaPlus /> <span>Invite</span>
                     </button>
-                    <button
-                      onClick={() => {
-                        setAddingList(false);
-                        setNewListName("");
-                      }}
-                      className="px-4 py-2 text-gray-600 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              )}
+                )}
             </div>
-          )}
         </div>
-      </div>
 
-      {/* Task Modal */}
-      <TaskModal
+        {/* Lists Container: Horizontal Scrolling */}
+        <div 
+            className="flex flex-row space-x-6 pb-6 pr-6 overflow-x-auto overflow-y-hidden whitespace-nowrap"
+            style={{ height: 'calc(100vh - 110px)' }} 
+        >
+            {selectedBoard.lists.map((list) => {
+                const listTasks = selectedBoard.tasks
+                    .filter((t) => t.listId === list._id)
+                    .sort((a, b) => a.position - b.position);
+                
+                return (
+                    <List
+                        darkMode={darkMode}
+                        key={list._id}
+                        list={list}
+                        tasks={listTasks}
+                        onTaskDrop={handleTaskDrop}
+                        onAddTask={currentUserRole === "admin" ? () => handleAddTask(list._id) : undefined}
+                        onEditTask={handleEditTask}
+                        onTaskComplete={handleTaskComplete}
+                        onTaskDelete={handleTaskDelete}
+                        onDeleteList={handleDeleteList}
+                        currentUserRole={currentUserRole}
+                    />
+                );
+            })}
+
+            {/* Add List Card - Refined Styling */}
+            {currentUserRole === "admin" && (
+                <div 
+                    className={`w-80 flex-shrink-0 rounded-xl p-4 shadow-inner ${listAdderBg} h-min`}
+                    // This div container should prevent the blur from the input when the user is typing
+                    // but we need to rely on the logic in BoardPage to manage the state correctly
+                >
+                    {!addingList ? (
+     <button
+        onClick={() => setAddingList(true)}
+        className={`
+            w-full 
+            flex items-center justify-center 
+            p-3 rounded-lg font-medium transition duration-200
+            ${listAdderText} 
+            border border-dashed 
+            
+            // All base and hover styles are now controlled by these two props:
+            ${buttonAddListDefault} 
+            ${buttonAddListHoverOpacity} 
+        `}
+    >
+        <FaPlus className="mr-2" /> Add a new list
+    </button>
+                    ) : (
+                        <div className="flex flex-col space-y-3">
+                            <input
+                                type="text"
+                                value={newListName}
+                                onChange={(e) => setNewListName(e.target.value)}
+                                placeholder="Enter list name..."
+                                // Added focus ring and padding
+                                className={`w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${inputBg}`}
+                                
+                                // NOTE: The onBlur should be managed carefully with the buttons onClick.
+                                // For now, we rely on the component's state logic to handle it.
+                                // It is often better to clear state via button clicks than onBlur in such cases.
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') handleAddList();
+                                    if (e.key === 'Escape') setAddingList(false);
+                                }}
+                                autoFocus
+                            />
+                            <div className="flex space-x-2">
+                                <button
+                                    onClick={handleAddList}
+                                    className={`px-4 py-2 rounded-lg transition font-medium ${buttonGreen} shadow-sm`}
+                                    disabled={!newListName.trim()}
+                                >
+                                    Add List
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setAddingList(false);
+                                        setNewListName("");
+                                    }}
+                                    className={`px-4 py-2 rounded-lg transition ${buttonCancel} shadow-sm`}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
+        </div>
+    </div>
+
+    {/* Modals */}
+    <TaskModal
         isOpen={isTaskModalOpen}
+        darkMode={darkMode}
         onClose={() => setIsTaskModalOpen(false)}
         onSave={saveTask}
         task={selectedTask}
         currentListId={currentListId}
         boardMembers={selectedBoard.members}
-      />
+    />
 
-      {/* Invite Modal */}
-      <InviteModal
+    <InviteModal
         isOpen={isInviteModalOpen}
         onClose={() => setIsInviteModalOpen(false)}
         onInvite={handleInviteMember}
-      />
-      {isMembersModalOpen ?
-       <MembersListModal /> : null
-      }
-    </DndProvider>
+    />
+    {isMembersModalOpen && <MembersListModal />}
+</DndProvider>
+
+
+
+
+
+
+
   );
 };
 
