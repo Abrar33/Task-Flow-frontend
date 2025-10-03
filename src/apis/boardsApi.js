@@ -3,7 +3,7 @@
 // This file centralizes all API calls related to the board resource using Axios.
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://taskflow-backend-production-73ac.up.railway.app';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://taskflow-backend-production-73ac.up.railway.app';
 
 const getAuthToken = () => {
   // Replace with your actual logic to get the JWT from localStorage, a cookie, etc.

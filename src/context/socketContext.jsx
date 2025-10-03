@@ -8,10 +8,10 @@ export const useSocket = () => useContext(SocketContext);
 export const SocketProvider = ({ children }) => {
   const { user } = useAuth();
   const [socket, setSocket] = useState(null);
-
+const API_URL = import.meta.env.VITE_API_URL ||"https://taskflow-backend-production-73ac.up.railway.app";
   useEffect(() => {
     if (user && user._id) {
-      const s = io("https://taskflow-backend-production-73ac.up.railway.app", { query: { userId: user._id } });
+      const s = io(API_URL, { query: { userId: user._id } });
       window.socket = s; // ✅ For debugging
       setSocket(s);
 

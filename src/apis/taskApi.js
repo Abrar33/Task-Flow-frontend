@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.API_BASE_URL || "https://taskflow-backend-production-73ac.up.railway.app";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "https://taskflow-backend-production-73ac.up.railway.app";
 
 const callApi = async (url, method, data = null) => {
   try {
