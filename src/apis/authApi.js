@@ -1,5 +1,5 @@
 import axios from 'axios'
-const API_URL = import.meta.env.API_BASE_URL ||'https://task-flow-backend-umber.vercel.app'
+const API_URL = import.meta.env.API_BASE_URL ||'https://taskflow-backend-production-73ac.up.railway.app'
 
 // Register user
 export const register = async (userData) => {
